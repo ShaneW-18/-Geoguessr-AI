@@ -1,6 +1,6 @@
 import './App.css';
 import Shane from './classes/Shane';
-import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 
 function getFile(e){
   const files = e.target.files;
@@ -26,11 +26,20 @@ function getFile(e){
 function App() {
   return (
     <div className="App">
-      <h1>Geoguesser AI</h1>
-        <Box>
-          <Shane getFile={getFile}>Click me im shane</Shane>
-
-        </Box>
+        <Grid 
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justify="center"
+          sx={{ width: '100%' }}>
+            <Grid item xs="3">
+              <h1>Geoguesser AI</h1>
+            </Grid>
+            <Grid item xs="3">
+              <Shane getFile={getFile}>Click me im shane</Shane>
+            </Grid>
+        </Grid>
     </div>
   );
 }
