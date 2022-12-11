@@ -7,8 +7,25 @@ import numpy as np
 import pickle as pkl
 import os
 from shapely.geometry import Polygon
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False})
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "*",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 model = tf.keras.models.load_model('cnnmodel_1.2.model')
 test_data = np.load('example_images.npy')
 usaPolyGrid = pkl.load(open("usaPolyGrid.pkl", 'rb'))
