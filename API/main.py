@@ -12,9 +12,6 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False})
 
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
     "*",
 ]
 
@@ -56,7 +53,8 @@ async def test_images():
                "Predicted_longitude": f"{predicted_long}",
                "Predicted_latitude": f"{predicted_lat}",
                "Actual_longitude": f"{long}",
-               "Actual_latitude": f"{lat}"
+               "Actual_latitude": f"{lat}",
+               "Access-Control-Allow-Origin": "*"
                }
     return FileResponse(f'example_images/{img_dir}', media_type='image/jpg', headers=headers)
 
