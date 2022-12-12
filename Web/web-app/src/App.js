@@ -4,13 +4,6 @@ import ShaneW from './classes/ShaneW';
 import Grid from '@mui/material/Grid';
 import { useState } from 'react';
 
-function getFile(e){
-  const files = e.target.files;
-  const data = new FormData();
-  for (let i = 0; i<files.length; i++){
-    data.append('file', files[i]);
-  }
-}
 
 function App(props) {
   const [img, setImg] = useState('');
@@ -24,6 +17,28 @@ function App(props) {
     const imgUrl = URL.createObjectURL(blob);
     setImg(imgUrl);
     return true;
+  }
+
+  async function getFile(e){
+
+    await sendImg(e.target);
+  }
+
+  async function sendImg(target) {
+    const files = target.files;
+    const data = new FormData();
+    for (let i = 0; i<files.length; i++){
+      data.append('file', files[i]);
+    }
+  
+    const req = {
+      method: 'POST',
+      body: data
+    };
+  
+  
+    const url = 'https://geoguessrapi.swiles.tech/test-images';
+    const r = await fetch(url, req);
   }
 
 
