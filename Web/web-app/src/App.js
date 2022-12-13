@@ -25,7 +25,7 @@ function App(props) {
   const [src, setSrc] = useState();
 
   async function get() {
-    const url = 'https://geoguessrapi.swiles.tech/test-images?g=1';
+    const url = 'https://geoguessrapi.swiles.tech/test-images';
 
     axios.get(url, {
       responseType: 'blob'
@@ -78,7 +78,7 @@ function App(props) {
     if (src){
       el =
       <div>
-        
+
       </div>
     } else {
 
@@ -100,7 +100,7 @@ function App(props) {
     <div className="App">
       <Grid>
         <Grid item align="center">
-          <h2>Geoguesser AI</h2>
+          <h2>Geoguessr AI</h2>
         </Grid>
         <Grid item align="center">
           {el}
