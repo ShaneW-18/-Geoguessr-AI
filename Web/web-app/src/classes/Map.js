@@ -1,43 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const Map = ({
-    onClick,
-    onIdle,
-    children,
-    style,
-    ...options
-  }) => {
-    const ref = React.useRef(null);
+const Map = (props) => {
+    const ref = React.useRef();
     const [map, setMap] = React.useState();
+
+    const zoom = 8;
   
-    React.useEffect(() => {
-      if (ref.current && !map) {
-        setMap(new window.google.maps.Map(ref.current, {}));
+    useEffect(() => {
+      if (ref.current && !map){
+        const center = new window.google.maps.LatLng(-34.397, 150.644);
+        setMap(new window.google.maps.Map(ref.current, {
+          center,
+          zoom,
+        }));
       }
     }, [ref, map]);
   
-    React.useEffect(() => {
+    useEffect(() => {
       if (map) {
-  
-        if (onClick) {
-          map.addListener("click", onClick);
+        if (props.onClick) {
+          map.addListener("click", props.onClick);
         }
   
-        if (onIdle) {
-          map.addListener("idle", () => onIdle(map));
+        if (props.onIdle) {
+          map.addListener("idle", () => props.onIdle(map));
         }
       }
-    }, [map, onClick, onIdle]);
+    }, [map, props.onClick, props.onIdle]);
   
     return (
       <>
-        <div ref={ref} style={style} />
-        {React.Children.map(children, (child) => {
+        <div ref={ref} style={props.style} id="map" />
+        {React.Children.map(props.children, (child) => {
           if (React.isValidElement(child)) {
             return React.cloneElement(child, { map });
           }
         })}
-      </>
+        </>
     );
   };
 

@@ -4,25 +4,9 @@ import Grid from '@mui/material/Grid';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Map from './classes/Map';
-import { Wrapper } from '@googlemaps/react-wrapper';
 import Marker from './classes/Marker';
+import { Wrapper } from '@googlemaps/react-wrapper';
 
-function getFile(e){
-  const files = e.target.files;
-  const data = new FormData();
-  for (let i = 0; i<files.length; i++){
-    data.append('file', files[i]);
-  }
-
-  axios.post('https://geoguessrapi.swiles.tech/upload', data, {
-    headers: {
-      'accept': 'application/json',
-      'Content-Type': 'multipart/form-data; boundary='+data._boundary
-    }
-  }).then(r => {
-    console.log(r);
-  });
-}
 
 const render = (status) => {
   return <h1>{status}</h1>;
@@ -33,7 +17,7 @@ const render = (status) => {
 function App(props) {
   const [img, setImg] = useState('');
   const [r, setR] = useState(0);
-  const [clicks, setClicks] = useState([]);
+  const [markers, setMarkers] = useState([]);
   const [zoom, setZoom] = useState(3);
   const [center, setCenter] = useState({
     lat:100,
@@ -53,23 +37,34 @@ function App(props) {
     });
   }
 
-  useEffect(() => {
 
-  }, [img]);
-
-  const onIdle = (m) => {
-    console.log("onIdle");
-    setZoom(m.getZoom());
-    console.log(m);
-    //setCenter(m.getCenter().toJSON());
-  };
-
-
+  const addMarker = (e) => {
+    const m = [...markers];
+    m.push(e.latLng);
+    setMarkers(m);
+  }
 
   return (
     <div className="App">
-      
-        <Grid 
+      <Wrapper apiKey={"AIzaSyB89NAuB_mXJjOtwYOD2iitTAAH_FmbmlI"} render={render}>
+              <Map style={{ width: '400px', height: '400px' }} lat={100} lon={40}>
+                  {markers.map((latLng, i) => (
+                  <Marker key={i} position={latLng} />
+                ))}
+              </Map>
+            </Wrapper>
+    </div>
+  );
+}
+
+export default App;
+
+
+/**
+ * 
+
+
+        {0 && <Grid 
           container
           spacing={0}
           direction="column"
@@ -84,22 +79,10 @@ function App(props) {
             </Grid>
             <img src={img} alt="Shane" key={'clicks-' + r}></img>
             <p>{img}</p>
-        </Grid>
+        </Grid>}
         
-        <div style={{width:'100%', height: '100vh'}}>
-          <Wrapper apiKey={"AIzaSyB89NAuB_mXJjOtwYOD2iitTAAH_FmbmlI"} render={render}>
-            <Map style={{ height: '400px', width: '400px'}}
-              center={center}
-              zoom={zoom}
-              onIdle={onIdle}>
-                {clicks.map((latLng, i) => (
-                <Marker key={i} position={latLng} />
-              ))}
-            </Map>
-          </Wrapper>
-        </div>
-    </div>
-  );
-}
-
-export default App;
+        {0 &&<div style={{width:'400px', height:'400px'}}>
+          <div style={{ display:'flex', height: '100%'}}>
+          </div>
+        </div>}
+ */
