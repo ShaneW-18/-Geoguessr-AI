@@ -8,7 +8,7 @@ const Map = (props) => {
   
     useEffect(() => {
       if (ref.current && !map){
-        const center = new window.google.maps.LatLng(-34.397, 150.644);
+        const center = new window.google.maps.LatLng(props.lat, props.lon);
         setMap(new window.google.maps.Map(ref.current, {
           center,
           zoom,

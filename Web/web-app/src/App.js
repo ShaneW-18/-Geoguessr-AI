@@ -1,4 +1,5 @@
 import './App.css';
+import Shane from './classes/Shane';
 import ShaneW from './classes/ShaneW';
 import Grid from '@mui/material/Grid';
 import { useEffect, useState } from 'react';
@@ -8,6 +9,7 @@ import Marker from './classes/Marker';
 import { Wrapper } from '@googlemaps/react-wrapper';
 
 
+
 const render = (status) => {
   return <h1>{status}</h1>;
 };
@@ -15,74 +17,100 @@ const render = (status) => {
 
 
 function App(props) {
-  const [img, setImg] = useState('');
-  const [r, setR] = useState(0);
   const [markers, setMarkers] = useState([]);
   const [zoom, setZoom] = useState(3);
-  const [center, setCenter] = useState({
-    lat:100,
-    lng:70
-  });
+  const [showInfo, setShowInfo] = useState(true);
+
+  const [hasMap, setHasMap] = useState(false);
+  const [src, setSrc] = useState();
 
   async function get() {
-    setImg('');
     const url = 'https://geoguessrapi.swiles.tech/test-images?g=1';
 
-    const blob = axios.get(url, {
+    axios.get(url, {
       responseType: 'blob'
     }).then(r => {
-      console.log('r', r);
-      setImg(URL.createObjectURL(r.data));
-      setR(r + 1);
+      if (r){
+        setSrc(URL.createObjectURL(r.data));
+        setHasMap(true);
+
+        //wait for map to load, then add the marker
+        const id = setInterval(()=>{
+          if (window.google){
+            addMarker(new window.google.maps.LatLng(-34.397, 150.644));
+            clearInterval(id);
+          }
+        }, 200);
+      }
     });
   }
 
+  async function upload() {
 
-  const addMarker = (e) => {
+  }
+
+
+  const addMarker = (latlon) => {
     const m = [...markers];
-    m.push(e.latLng);
+    m.push(latlon);
     setMarkers(m);
+  }
+
+  let el = <></>;
+
+  if (hasMap){
+    el =
+    <div>
+      <Wrapper apiKey={'AIzaSyB89NAuB_mXJjOtwYOD2iitTAAH_FmbmlI'} render={render}>
+        <Map style={{ width: '1400px', height: '600px' }} lat={-34.397} lon={150.644}>
+            {markers.map((latLng, i) => (
+            <Marker key={`marker-${i}`} position={latLng} />
+          ))}
+        </Map>
+      </Wrapper>
+      <ShaneW onClick={function() {
+        setHasMap(false);
+        setSrc('');
+        setShowInfo(false);
+      }}>Try another image</ShaneW>
+    </div>
+  } else {
+    if (src){
+      el =
+      <div>
+        
+      </div>
+    } else {
+
+      el = 
+      <div>
+        {showInfo && <div className="p-about">
+          <p>To get started, press the "GET" button to fetch a random image or press UPLOAD to upload your own.</p>
+          <p>Fill in the known location if applicable, and then click GET LOCATION to receive the model's predicted location.</p>
+        </div>}
+        <Grid item align="center" xs={4} style={{ marginTop: '20px' }} className="api-btns">
+          <ShaneW onClick={get} className="get-img">GET</ShaneW>
+          <Shane className="upload-img">UPLOAD</Shane>
+        </Grid>
+      </div>
+    }
   }
 
   return (
     <div className="App">
-      <Wrapper apiKey={"AIzaSyB89NAuB_mXJjOtwYOD2iitTAAH_FmbmlI"} render={render}>
-              <Map style={{ width: '400px', height: '400px' }} lat={100} lon={40}>
-                  {markers.map((latLng, i) => (
-                  <Marker key={i} position={latLng} />
-                ))}
-              </Map>
-            </Wrapper>
+      <Grid>
+        <Grid item align="center">
+          <h2>Geoguesser AI</h2>
+        </Grid>
+        <Grid item align="center">
+          {el}
+        </Grid>
+      </Grid>
+      <div>
+          {src && !hasMap && <img src={src} key={`img-check`} alt="Shane"/>}
+      </div>
     </div>
   );
 }
 
 export default App;
-
-
-/**
- * 
-
-
-        {0 && <Grid 
-          container
-          spacing={0}
-          direction="column"
-          alignItems="center"
-          justify="center"
-          sx={{ width: '100%' }}>
-            <Grid item>
-              <h1>Geoguesser AI</h1>
-            </Grid>
-            <Grid item>
-              <ShaneW onClick={get}>GET</ShaneW>
-            </Grid>
-            <img src={img} alt="Shane" key={'clicks-' + r}></img>
-            <p>{img}</p>
-        </Grid>}
-        
-        {0 &&<div style={{width:'400px', height:'400px'}}>
-          <div style={{ display:'flex', height: '100%'}}>
-          </div>
-        </div>}
- */
