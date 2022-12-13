@@ -1,12 +1,16 @@
+import io
 import random
 import tensorflow as tf
 from PIL import Image
-from fastapi import FastAPI, Header, Response, Form, UploadFile, File
+from fastapi import FastAPI, Header, Response, Form, UploadFile, File, Request
 from fastapi.responses import FileResponse
 import numpy as np
 import pickle as pkl
 from shapely.geometry import Polygon
 from fastapi.middleware.cors import CORSMiddleware
+from typing import List
+import shutil
+import numpy as np
 
 app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False})
 
@@ -33,13 +37,24 @@ async def root():
 
 
 @app.post("/upload")
-async def say_hello(img: UploadFile = File(...)):
-    print(img)
-    # img = await img.read()
-    # long,lat = get_cords(get_prediction(img))
-    # return {"longitude": f"{long}",
-    #         "Latitude": f"{lat}"}
-    return {'success'}
+async def upload(request: Request):
+    # try:
+    #     contents = file.file.read()
+    #     with open(file.filename, 'wb') as f:
+    #         f.write(contents)
+    # except Exception:
+    #     return {"message": "There was an error uploading the file"}
+    # finally:
+    #     file.file.close()
+    data: bytes = await request.body()
+    image = Image.open(io.BytesIO(data))
+    image = image.resize((640, 640))
+    grid = get_prediction(image)
+    long, lat = get_cords(grid)
+    return {"Longitude": f"{long[0]}",
+            "latitude": f"{lat[0]}",
+            "grid": f"{grid}"
+            }
 
 
 @app.get('/test-images')
@@ -72,7 +87,6 @@ def get_random_image():
 
 
 def get_prediction(image):
-    print('sdfsdfsdfs')
     print(type(image))
     img_list = []
     img_np = np.asarray(image)
