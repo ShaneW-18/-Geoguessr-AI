@@ -3,7 +3,6 @@ import Shane from './classes/Shane';
 import ShaneW from './classes/ShaneW';
 import ShaneW2 from './classes/ShaneW2';
 import Grid from '@mui/material/Grid';
-import { Backdrop, makeStyles } from '@mui/material';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Map from './classes/Map';
@@ -103,15 +102,10 @@ function App(props) {
   let el = <></>;
 
   if (hasMap){
-
     el =
     <div>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap:'10px'}} >
-        <div style={{width:'300px', height:'300px', position: 'relative'}}>
-          <Backdrop open={false} style={{position:'absolute', left:'0', top:'0'}}>
-            <img src={src} alt="Shane" width="300" height="300"/>
-          </Backdrop>
-        </div>
+        <img src={src} alt="Shane" width="300" height="300"/>
         <Wrapper apiKey={'AIzaSyB89NAuB_mXJjOtwYOD2iitTAAH_FmbmlI'} render={render}>
           <Map style={{ width: '1200px', height: '500px' }} lat={cen.lat} lon={cen.lon}>
               {markers.map((latLng, i) => (
@@ -134,11 +128,11 @@ function App(props) {
       <div className="markers">
         <div className="marker-label">
           <div className="mark a" />
-          <span>- Actual Location</span>
+          <span>Actual Location</span>
         </div>
         <div className="marker-label">
           <div className="mark p" />
-          <span>- Predicted Location</span>
+          <span>Predicted Location</span>
         </div>
       </div>
     </div>
