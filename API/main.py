@@ -26,7 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-model = tf.keras.models.load_model('cnnmodel_1.2.model')
+model = tf.keras.models.load_model('cnnmodel_1.3.model')
 test_data = np.load('example_images.npy')
 usaPolyGrid = pkl.load(open("usaPolyGrid.pkl", 'rb'))
 
