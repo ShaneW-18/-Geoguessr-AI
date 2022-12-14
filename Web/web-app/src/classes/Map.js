@@ -4,9 +4,10 @@ const Map = (props) => {
     const ref = React.useRef();
     const [map, setMap] = React.useState();
 
-    const zoom = 8;
+    const zoom = 5;
   
     useEffect(() => {
+      console.log('use');
       if (ref.current && !map){
         const center = new window.google.maps.LatLng(props.lat, props.lon);
         setMap(new window.google.maps.Map(ref.current, {
@@ -27,10 +28,17 @@ const Map = (props) => {
         }
       }
     }, [map, props.onClick, props.onIdle]);
+
+    useEffect(() =>{
+      if (map){
+        console.log('pan');
+        map.panTo(new window.google.maps.LatLng(props.lat, props.lon));
+      }
+    }, [props.lat]);
   
     return (
       <>
-        <div ref={ref} style={props.style} id="map" />
+        <div ref={ref} style={props.style} id="map" key="the-map"/>
         {React.Children.map(props.children, (child) => {
           if (React.isValidElement(child)) {
             return React.cloneElement(child, { map });
