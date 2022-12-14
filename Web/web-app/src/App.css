@@ -62,3 +62,33 @@ h1{
   gap:10px;
   justify-content: center;
 }
+
+.marker-label {
+  display:flex;
+  align-items: center;
+}
+
+.marker-label .mark {
+  width:52px;
+  height:55px;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.marker-label {
+  color:#fff;
+}
+
+.mark.a {
+  background-image: url(../marker-a.png);
+}
+
+.mark.p {
+  background-image: url(../marker-p.png);
+}
+
+.markers {
+  position:absolute;
+  left:0;
+  bottom:0;
+}

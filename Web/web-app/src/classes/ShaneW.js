@@ -4,9 +4,10 @@ import LoadingButton from '@mui/lab/LoadingButton';
 function ShaneW(props) {
 
     const [loading, setLoading] = useState(false);
-    function handleClick(){
+    async function handleClick(){
         setLoading(true);
-        props.onClick().then(e => setLoading(false));
+        await props.onClick();
+        setLoading(false);
     }
 
     return (
