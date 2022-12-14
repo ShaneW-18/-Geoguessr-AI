@@ -26,7 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-model = tf.keras.models.load_model('cnnmodel_1.2.model')
+model = tf.keras.models.load_model('cnnmodel_1.3.model')
 test_data = np.load('example_images.npy')
 usaPolyGrid = pkl.load(open("usaPolyGrid.pkl", 'rb'))
 
@@ -38,14 +38,7 @@ async def root():
 
 @app.post("/upload")
 async def upload(request: Request):
-    # try:
-    #     contents = file.file.read()
-    #     with open(file.filename, 'wb') as f:
-    #         f.write(contents)
-    # except Exception:
-    #     return {"message": "There was an error uploading the file"}
-    # finally:
-    #     file.file.close()
+
     data: bytes = await request.body()
     image = Image.open(io.BytesIO(data))
     image = image.resize((640, 640))
@@ -56,10 +49,27 @@ async def upload(request: Request):
             "grid": f"{grid}"
             }
 
+@app.get('/test-data/{id}')
+async def test_data(id):
+    img_dir = get_image(id)
+    img = Image.open(f'example_images/{img_dir}')
+    grid_prediction = get_prediction(img)
+    predicted_long, predicted_lat = get_cords(grid_prediction)
+    print(img_dir)
+    parts = img_dir.split("_")
+    lat_long = parts[1].split(",")
+    lat = lat_long[0]
+    long = lat_long[1].replace(".jpg", "")
+    return {"Prediction_label": f"{grid_prediction}",
+               "Predicted_longitude": f"{predicted_long[0]}",
+               "Predicted_latitude": f"{predicted_lat[0]}",
+               "Actual_longitude": f"{long}",
+               "Actual_latitude": f"{lat}",
+               }
 
-@app.get('/test-images')
-async def test_images():
-    img_dir = get_random_image()
+@app.get('/test-images/{id}')
+async def test_images(id):
+    img_dir = get_image(id)
     img = Image.open(f'example_images/{img_dir}')
     grid_prediction = get_prediction(img)
     predicted_long, predicted_lat = get_cords(grid_prediction)
@@ -75,13 +85,12 @@ async def test_images():
                "Actual_longitude": f"{long}",
                "Actual_latitude": f"{lat}",
                }
-    return FileResponse(f'example_images/{img_dir}', media_type='image/jpg', headers=headers)
+    return FileResponse(f'example_images/{img_dir}', media_type='image/jpg', headers=headers, )
 
 
-def get_random_image():
+def get_image(number):
     file_names = np.load('example_images.npy', allow_pickle=True)
-    rand = random.randint(0, len(file_names) - 1)
-    file = file_names[rand]
+    file = file_names[int(number)]
     parts = str(file).split("/")
     return parts[2]
 
@@ -100,3 +109,4 @@ def get_cords(grid_number):
     poly = Polygon(np.flip(usaPolyGrid[int(grid_number)]))
     centriod = poly.centroid
     return centriod.xy
+
