@@ -2,18 +2,14 @@ import React, { useState } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 
 function ShaneW(props) {
-
-    const [loading, setLoading] = useState(false);
-    async function handleClick(){
-        setLoading(true);
-        await props.onClick();
-        setLoading(false);
+    function handleClick(){
+        props.onClick();
     }
 
     return (
         <LoadingButton 
-            loading={loading} 
-            className={loading ? 'btn-loading' : ''} 
+            loading={props.loading} 
+            className={props.loading ? 'btn-loading' : ''} 
             onClick={handleClick} 
             variant="contained" 
             color='secondary' 
