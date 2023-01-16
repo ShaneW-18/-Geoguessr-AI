@@ -1,8 +1,14 @@
 name: Create and publish a Docker image
 
 on:
+  schedule:
+    - cron: '33 14 * * *'
   push:
-    branches: ['release']
+    branches: [ "master" ]
+    # Publish semver tags as releases.
+    tags: [ 'v*.*.*' ]
+  pull_request:
+    branches: [ "master" ]
 
 env:
   REGISTRY: ghcr.io
@@ -39,4 +45,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
